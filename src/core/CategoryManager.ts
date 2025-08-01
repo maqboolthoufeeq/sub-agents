@@ -8,7 +8,7 @@ export class CategoryManager {
       ['generic', {
         name: 'generic',
         description: 'General-purpose software development roles',
-        agents: ['senior-software-engineer', 'technical-project-manager', 'qa-automation-tester', 'security-specialist'],
+        agents: ['senior-software-engineer', 'technical-project-manager', 'qa-automation-tester', 'security-specialist', 'ui-ux-designer'],
       }],
       ['frontend', {
         name: 'frontend',
@@ -18,7 +18,7 @@ export class CategoryManager {
       ['backend', {
         name: 'backend',
         description: 'Backend development experts for server-side frameworks',
-        agents: ['django-developer', 'fastapi-builder', 'express-specialist', 'spring-architect', 'rails-developer'],
+        agents: ['django-developer', 'fastapi-builder', 'express-specialist', 'spring-architect', 'rails-developer', 'nodejs-developer', 'php-developer', 'javascript-developer', 'java-developer', 'python-developer'],
       }],
       ['cloud-devops', {
         name: 'cloud-devops',
@@ -39,6 +39,16 @@ export class CategoryManager {
         name: 'automation',
         description: 'Workflow automation and integration experts',
         agents: ['n8n-workflow-builder', 'zapier-integrator', 'make-automation-expert'],
+      }],
+      ['test', {
+        name: 'test',
+        description: 'Testing and quality assurance specialists',
+        agents: ['test-automation-engineer', 'performance-test-engineer', 'security-test-specialist'],
+      }],
+      ['mobile', {
+        name: 'mobile',
+        description: 'Mobile application development experts',
+        agents: ['ios-developer', 'android-developer', 'react-native-developer', 'flutter-developer'],
       }],
     ]);
   }
