@@ -15,7 +15,7 @@ Initialize and manage specialized AI agents for Claude Code in your project. Get
 
 ```bash
 # ✅ Correct usage
-npx sub-agents init
+npx sub-agents init --interactive
 
 # ❌ Do NOT install with npm/yarn
 # npm install sub-agents  # This won't work as expected
