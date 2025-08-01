@@ -18,11 +18,11 @@ const welcomeMessage = boxen(
   chalk.bold.green(`Sub-Agents v${packageJson.version}`) + '\n\n' +
   chalk.white('Thank you for installing sub-agents!') + '\n\n' +
   chalk.gray('Get started with:') + '\n' +
-  chalk.cyan('  sub-agents --help') + '\n' +
-  chalk.cyan('  sub-agents categories') + '\n' +
-  chalk.cyan('  sub-agents list') + '\n\n' +
+  chalk.cyan(' npx sub-agents --help') + '\n' +
+  chalk.cyan(' npx sub-agents categories') + '\n' +
+  chalk.cyan(' npx sub-agents list') + '\n\n' +
   chalk.gray('Documentation:') + '\n' +
-  chalk.blue('  https://github.com/maqboolthoufeeq/claude-agents'),
+  chalk.blue('  https://github.com/maqboolthoufeeq/sub-agents'),
   {
     padding: 1,
     margin: 1,

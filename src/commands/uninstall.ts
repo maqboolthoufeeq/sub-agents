@@ -64,8 +64,8 @@ export const uninstallCommand = new Command('uninstall')
     else {
       console.error(chalk.red('Error: Please specify agents or use interactive mode'));
       console.log(chalk.yellow('\nExamples:'));
-      console.log('  sub-agents uninstall --agents=nextjs-developer,django-developer');
-      console.log('  sub-agents uninstall --interactive');
+      console.log(' npx sub-agents uninstall --agents=nextjs-developer,django-developer');
+      console.log(' npx sub-agents uninstall --interactive');
       process.exit(1);
     }
 

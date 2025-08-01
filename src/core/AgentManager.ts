@@ -271,6 +271,11 @@ export class AgentManager {
       const files = await glob(pattern);
       
       for (const file of files) {
+        // Skip files in the commons directory
+        if (file.includes('/commons/') || file.includes('\\commons\\')) {
+          continue;
+        }
+        
         const validation = await this.validateAgent(file);
         if (validation.valid && validation.agent) {
           validation.agent.installed = installed;

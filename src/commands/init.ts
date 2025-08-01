@@ -6,6 +6,7 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
+import { IntegrationManager } from '../core/IntegrationManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -65,7 +66,7 @@ async function initializeProject(options: InitOptions) {
     }
     
     // Redirect to install command
-    console.log(chalk.gray('\nUse: sub-agents install --interactive\n'));
+    console.log(chalk.gray('\nUse: npx sub-agents install --interactive\n'));
     return;
   }
   
@@ -125,7 +126,23 @@ async function initializeProject(options: InitOptions) {
     await updateGitignore();
     
     console.log(chalk.green('\n✅ sub-agents initialized successfully!\n'));
-    console.log(chalk.gray('Next steps:'));
+    
+    // Offer integration setup
+    const integrationManager = new IntegrationManager(process.cwd());
+    console.log(chalk.cyan('🔌 Optional Integrations\n'));
+    
+    const choice = await integrationManager.offerIntegrationChoice();
+    
+    if (choice === 'recommended') {
+      await integrationManager.installIntegrations(['serena']);
+    } else if (choice === 'custom') {
+      const selectedIntegrations = await integrationManager.promptForIntegrations();
+      if (selectedIntegrations.length > 0) {
+        await integrationManager.installIntegrations(selectedIntegrations);
+      }
+    }
+    
+    console.log(chalk.gray('\nNext steps:'));
     console.log(chalk.gray('1. Review agents in .claude/agents/'));
     console.log(chalk.gray('2. Use Claude Code with your project-specific agents'));
     console.log(chalk.gray('3. Run "npx sub-agents list" to see installed agents\n'));

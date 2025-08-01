@@ -36,9 +36,9 @@ export const validateCommand = new Command('validate')
     } else {
       console.error(chalk.red('Error: Please specify an agent, path, or use --all'));
       console.log(chalk.yellow('\nExamples:'));
-      console.log('  sub-agents validate --agent=nextjs-developer');
-      console.log('  sub-agents validate --path=./my-agents');
-      console.log('  sub-agents validate --all');
+      console.log(' npx sub-agents validate --agent=nextjs-developer');
+      console.log(' npx sub-agents validate --path=./my-agents');
+      console.log(' npx sub-agents validate --all');
       process.exit(1);
     }
 

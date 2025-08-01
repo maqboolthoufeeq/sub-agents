@@ -233,6 +233,6 @@ No additional configuration required.
     
     console.log(chalk.yellow('\n💡 Next steps:'));
     console.log(`  1. Edit ${filePath} to customize the agent definition`);
-    console.log(`  2. Run "sub-agents validate --path=${filePath}" to validate`);
-    console.log(`  3. Run "sub-agents install --agents=${agentData.name}" to test installation`);
+    console.log(`  2. Run "npx sub-agents validate --path=${filePath}" to validate`);
+    console.log(`  3. Run "npx sub-agents install --agents=${agentData.name}" to test installation`);
   });

@@ -72,3 +72,17 @@ export interface ValidationResult {
   warnings: string[];
   agent?: Agent;
 }
+
+export interface ProjectConfig extends Config {
+  projectName?: string;
+  projectType?: string;
+  installedAgents?: string[];
+  integrations?: {
+    [key: string]: {
+      name: string;
+      enabled: boolean;
+      initialized: boolean;
+      indexedAt?: string;
+    };
+  };
+}

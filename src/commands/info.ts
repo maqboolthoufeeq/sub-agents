@@ -116,6 +116,6 @@ export const infoCommand = new Command('info')
     // Installation command
     if (!agent.installed) {
       console.log(chalk.bold('\n💡 To install this agent:'));
-      console.log(chalk.green(`  sub-agents install --agents=${agent.name}`));
+      console.log(chalk.green(` npx sub-agents install --agents=${agent.name}`));
     }
   });

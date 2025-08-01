@@ -6,6 +6,7 @@ import fs from 'fs-extra';
 import path from 'path';
 import { AgentManager } from '../core/AgentManager.js';
 import { CategoryManager } from '../core/CategoryManager.js';
+import { IntegrationManager } from '../core/IntegrationManager.js';
 import type { InstallOptions } from '../types/index.js';
 
 interface CategoryChoice {
@@ -294,6 +295,27 @@ export const installCommand = new Command('install')
       console.log(chalk.gray('1. Review new agents in .claude/agents/'));
       console.log(chalk.gray('2. Use Claude Code with your enhanced agent configuration'));
       console.log(chalk.gray('3. Run "npx sub-agents list" to see all installed agents\n'));
+    }
+
+    // Offer integration setup after successful agent installation
+    if (results.success.length > 0) {
+      const integrationManager = new IntegrationManager(process.cwd());
+      const serenaStatus = await integrationManager.checkSerenaStatus();
+      
+      if (!serenaStatus.initialized) {
+        console.log(chalk.cyan('\n🔌 Optional Integrations Available\n'));
+        
+        const choice = await integrationManager.offerIntegrationChoice();
+        
+        if (choice === 'recommended') {
+          await integrationManager.installIntegrations(['serena']);
+        } else if (choice === 'custom') {
+          const selectedIntegrations = await integrationManager.promptForIntegrations();
+          if (selectedIntegrations.length > 0) {
+            await integrationManager.installIntegrations(selectedIntegrations);
+          }
+        }
+      }
     }
 
     // Exit with error if any installations failed
