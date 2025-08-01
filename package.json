@@ -1,6 +1,6 @@
 {
   "name": "sub-agents",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "Initialize and manage specialized AI sub-agents for Claude Code in your project",
   "main": "dist/index.js",
   "type": "module",
@@ -75,7 +75,8 @@
   "files": [
     "dist",
     "agents",
-    "templates"
+    "templates",
+    "commons"
   ],
   "repository": {
     "type": "git",

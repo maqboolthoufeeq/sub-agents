@@ -180,7 +180,7 @@ export const templateCommand = new Command('template')
       console.log(`  1. Edit ${outputPath} to create your agent definition`);
       console.log(`  2. Update the frontmatter with your agent's metadata`);
       console.log(`  3. Fill in the content sections with detailed information`);
-      console.log(`  4. Run "sub-agents validate --path=${outputPath}" to validate`);
+      console.log(`  4. Run "npx sub-agents validate --path=${outputPath}" to validate`);
       
       console.log(chalk.blue('\n📚 Template sections:'));
       console.log('  - Frontmatter: Agent metadata (name, version, etc.)');

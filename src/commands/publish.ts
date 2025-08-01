@@ -223,7 +223,7 @@ export const publishCommand = new Command('publish')
         }
         
         console.log(chalk.yellow('\n💡 Next steps:'));
-        console.log(`  - Install: sub-agents install --agents=${agent.name}`);
+        console.log(`  - Install: npx sub-agents install --agents=${agent.name}`);
         console.log(`  - Share: ${publishResult.url || registryUrl + '/agents/' + agent.name}`);
         
         if (options.private) {

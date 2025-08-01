@@ -74,6 +74,7 @@ your-project/
 - **Easy Management**: Add, remove, or update agents as your project evolves
 - **Custom Agents**: Create project-specific custom agents
 - **Git-Friendly**: `.claude/` directory can be gitignored or committed
+- **Serena Integration**: Optional semantic code analysis for improved context
 
 ## Commands
 
@@ -118,6 +119,13 @@ npx sub-agents update --all
 
 ### Configuration
 - `npx sub-agents config` - Manage configuration
+
+### Integration Management
+- `npx sub-agents integrations` - Manage optional integrations
+- `npx sub-agents integrations --list` - List available integrations
+- `npx sub-agents integrations --status` - Show integration status
+- `npx sub-agents integrations --install serena` - Install Serena integration
+- `npx sub-agents integrations --refresh` - Refresh Serena index
 
 ## Agent Categories
 
@@ -175,6 +183,36 @@ npx sub-agents config list
 Agents are stored in:
 - Global: `~/.claude/agents/`
 - Project: `.claude/agents/`
+
+## Serena Integration
+
+Sub-Agents offers optional integration with [Serena](https://github.com/oraios/serena), a semantic code analysis tool that enhances Claude Code's understanding of your codebase.
+
+### Benefits of Serena
+
+- **Semantic Code Analysis**: Understands code relationships and structure
+- **Optimized Token Usage**: Fetches only relevant context to reduce costs
+- **Project Memory**: Maintains knowledge about your project structure
+- **Better Code Navigation**: Quickly finds related code across your project
+
+### Setup Serena
+
+During `init` or `install`, you'll be offered three options:
+1. **Recommended**: Automatically installs Serena
+2. **Custom**: Choose which integrations to install
+3. **Skip**: Continue without integrations
+
+You can also set up Serena anytime with:
+```bash
+npx sub-agents integrations --install serena
+```
+
+### Using Serena
+
+Once installed, Serena works automatically with Claude Code. To interact with it:
+- Say "read Serena's initial instructions"
+- Use `/mcp__serena__initial_instructions`
+- View dashboard at http://127.0.0.1:24282/dashboard/index.html
 
 ## Agent Definition Format
 
