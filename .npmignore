@@ -1,0 +1,56 @@
+# Source files
+src/
+*.ts
+!dist/**/*.d.ts
+
+# Configuration files
+.eslintrc*
+.prettierrc*
+jest.config.*
+tsconfig.json
+*.tsbuildinfo
+
+# Development files
+*.test.ts
+*.spec.ts
+__tests__/
+coverage/
+.nyc_output/
+
+# Documentation source
+docs/
+*.md
+!README.md
+
+# Git and CI
+.git/
+.github/
+.gitignore
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+
+# Development builds
+*.map
+.cache/
+tmp/
+temp/
+
+# Examples (if any)
+examples/
