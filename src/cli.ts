@@ -20,6 +20,7 @@ import { createCommand } from './commands/create.js';
 import { templateCommand } from './commands/template.js';
 import { configCommand } from './commands/config.js';
 import { publishCommand } from './commands/publish.js';
+import { integrationsCommand } from './commands/integrations.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -58,6 +59,7 @@ program.addCommand(createCommand);
 program.addCommand(templateCommand);
 program.addCommand(configCommand);
 program.addCommand(publishCommand);
+program.addCommand(integrationsCommand);
 
 // Error handling
 program.exitOverride();
@@ -67,7 +69,7 @@ try {
 } catch (error: any) {
   if (error.code === 'commander.unknownCommand') {
     console.error(chalk.red(`Error: Unknown command '${error.message}'`));
-    console.log(chalk.yellow('\nRun "sub-agents --help" to see available commands.'));
+    console.log(chalk.yellow('\nRun "npx sub-agents --help" to see available commands.'));
   } else if (error.code === 'commander.help' || error.code === 'commander.helpDisplayed') {
     // Help was displayed, exit normally
     process.exit(0);

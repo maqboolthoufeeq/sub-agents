@@ -75,7 +75,8 @@
   "files": [
     "dist",
     "agents",
-    "templates"
+    "templates",
+    "commons"
   ],
   "repository": {
     "type": "git",

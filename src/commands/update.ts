@@ -30,8 +30,8 @@ export const updateCommand = new Command('update')
     } else {
       console.error(chalk.red('Error: Please specify agents or use --all'));
       console.log(chalk.yellow('\nExamples:'));
-      console.log('  sub-agents update --agents=nextjs-developer,django-developer');
-      console.log('  sub-agents update --all');
+      console.log(' npx sub-agents update --agents=nextjs-developer,django-developer');
+      console.log(' npx sub-agents update --all');
       process.exit(1);
     }
 

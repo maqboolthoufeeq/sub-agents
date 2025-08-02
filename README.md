@@ -15,7 +15,7 @@ Initialize and manage specialized AI agents for Claude Code in your project. Get
 
 ```bash
 # ✅ Correct usage
-npx sub-agents init
+npx sub-agents init --interactive
 
 # ❌ Do NOT install with npm/yarn
 # npm install sub-agents  # This won't work as expected
@@ -74,6 +74,7 @@ your-project/
 - **Easy Management**: Add, remove, or update agents as your project evolves
 - **Custom Agents**: Create project-specific custom agents
 - **Git-Friendly**: `.claude/` directory can be gitignored or committed
+- **Serena Integration**: Optional semantic code analysis for improved context
 
 ## Commands
 
@@ -118,6 +119,13 @@ npx sub-agents update --all
 
 ### Configuration
 - `npx sub-agents config` - Manage configuration
+
+### Integration Management
+- `npx sub-agents integrations` - Manage optional integrations
+- `npx sub-agents integrations --list` - List available integrations
+- `npx sub-agents integrations --status` - Show integration status
+- `npx sub-agents integrations --install serena` - Install Serena integration
+- `npx sub-agents integrations --refresh` - Refresh Serena index
 
 ## Agent Categories
 
