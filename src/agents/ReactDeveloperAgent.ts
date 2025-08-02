@@ -34,7 +34,7 @@ export class ReactDeveloperAgent extends BaseAgent {
         
         // Implementation would generate component code here
         const componentCode = this.generateComponentCode(
-          componentName as string,
+          componentName,
           { typescript, hooks, style } as any
         );
         
@@ -54,7 +54,7 @@ export class ReactDeveloperAgent extends BaseAgent {
       execute: async (_context, ...args) => {
         const hookName = args[0] as string;
         const options = args[1] as Record<string, unknown> | undefined;
-        const hookCode = this.generateHookCode(hookName as string, options);
+        const hookCode = this.generateHookCode(hookName, options);
         
         return {
           success: true,
@@ -72,7 +72,7 @@ export class ReactDeveloperAgent extends BaseAgent {
       execute: async (_context, ...args) => {
         const componentPath = args[0] as string;
         // Would analyze component and suggest optimizations
-        const analysis = await this.analyzeComponent(componentPath as string);
+        const analysis = await this.analyzeComponent(componentPath);
         const optimizations = this.suggestOptimizations(analysis);
         
         return {
@@ -94,7 +94,7 @@ export class ReactDeveloperAgent extends BaseAgent {
         const { framework = 'jest', library = 'testing-library' } = options || {};
         
         const testCode = this.generateTestCode(
-          componentPath as string,
+          componentPath,
           { framework, library } as any
         );
         

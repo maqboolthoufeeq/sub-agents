@@ -1,21 +1,57 @@
 import { Command } from 'commander';
 import chalk from 'chalk';
 import boxen from 'boxen';
+import path from 'path';
+import fs from 'fs-extra';
+import matter from 'gray-matter';
 import { AgentManager } from '../core/AgentManager.js';
 
 export const infoCommand = new Command('info')
-  .description('Display detailed information about an agent')
-  .argument('<agent-name>', 'Name of the agent')
+  .description('Display detailed information about an agent or documentation')
+  .argument('<name>', 'Name of the agent or documentation')
   .option('--json', 'Output in JSON format')
   .option('--markdown', 'Show raw markdown content')
-  .action(async (agentName: string, options) => {
+  .action(async (name: string, options) => {
+    // Check if it's a documentation file from commons
+    const commonsPath = path.join(path.dirname(import.meta.url.replace('file://', '')), '../../commons', `${name}.md`);
+    if (await fs.pathExists(commonsPath)) {
+      const content = await fs.readFile(commonsPath, 'utf-8');
+      const { data, content: markdown } = matter(content);
+      
+      if (options.json) {
+        console.log(JSON.stringify({ ...data, content: markdown }, null, 2));
+        return;
+      }
+      
+      if (options.markdown) {
+        console.log(content);
+        return;
+      }
+      
+      // Display formatted documentation
+      const header = boxen(
+        chalk.bold.white(data.name || name) + '\n' +
+        chalk.gray(data.description || 'Documentation'),
+        {
+          padding: 1,
+          borderStyle: 'round',
+          borderColor: 'cyan',
+        }
+      );
+      
+      console.log('\n' + header + '\n');
+      console.log(markdown);
+      return;
+    }
+    
+    // Otherwise, treat as agent
     const agentManager = new AgentManager();
     await agentManager.initialize();
 
-    const agent = await agentManager.getAgent(agentName);
+    const agent = await agentManager.getAgent(name);
 
     if (!agent) {
-      console.error(chalk.red(`Error: Agent "${agentName}" not found`));
+      console.error(chalk.red(`Error: Agent or documentation "${name}" not found`));
       process.exit(1);
     }
 

@@ -197,8 +197,14 @@ Sub-Agents offers optional integration with [Serena](https://github.com/oraios/s
 
 ### Setup Serena
 
+#### Prerequisites
+Before enabling Serena, ensure you have:
+- **Claude CLI**: Required for MCP configuration ([installation guide](https://docs.anthropic.com/claude/docs/claude-cli))
+- **UV Tool**: Required for Python packages (`curl -LsSf https://astral.sh/uv/install.sh | sh`)
+
+#### Installation
 During `init` or `install`, you'll be offered three options:
-1. **Recommended**: Automatically installs Serena
+1. **Recommended**: Automatically installs Serena (if prerequisites are met)
 2. **Custom**: Choose which integrations to install
 3. **Skip**: Continue without integrations
 
@@ -206,6 +212,12 @@ You can also set up Serena anytime with:
 ```bash
 npx sub-agents integrations --install serena
 ```
+
+If prerequisites are missing, sub-agents will:
+- Detect missing tools automatically
+- Provide installation instructions
+- Save your preference for later
+- Allow you to retry once tools are installed
 
 ### Using Serena
 
