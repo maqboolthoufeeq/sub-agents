@@ -10,6 +10,7 @@ import { IntegrationManager } from '../core/IntegrationManager.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
+const execAsync = promisify(exec);
 
 interface InitOptions {
   interactive?: boolean;
@@ -121,6 +122,10 @@ async function initializeProject(options: InitOptions) {
     
     // Create .claude/README.md
     await createProjectReadme(configPath, selectedAgents);
+    
+    // Create CLAUDE.md file
+    const hasAgentSelector = selectedAgents.includes('agent-selector');
+    await createClaudeMdFile(process.cwd(), selectedAgents, hasAgentSelector);
     
     // Add .claude to .gitignore if it exists
     await updateGitignore();
@@ -243,27 +248,27 @@ async function promptForAgents(projectType: string) {
 async function autoSelectAgents(projectType: string) {
   const mapping: Record<string, { agents: string[], categories: string[] }> = {
     nextjs: {
-      agents: ['nextjs-developer', 'react-component-builder', 'postgres-dba'],
-      categories: ['frontend', 'database']
+      agents: ['agent-selector', 'nextjs-developer', 'react-component-builder', 'postgres-dba'],
+      categories: ['generic', 'frontend', 'database']
     },
     react: {
-      agents: ['react-component-builder', 'senior-software-engineer'],
-      categories: ['frontend', 'generic']
+      agents: ['agent-selector', 'react-component-builder', 'senior-software-engineer'],
+      categories: ['generic', 'frontend']
     },
     django: {
-      agents: ['django-developer', 'postgres-dba', 'redis-expert'],
-      categories: ['backend', 'database']
+      agents: ['agent-selector', 'django-developer', 'postgres-dba', 'redis-expert'],
+      categories: ['generic', 'backend', 'database']
     },
     express: {
-      agents: ['express-specialist', 'mongodb-specialist'],
-      categories: ['backend', 'database']
+      agents: ['agent-selector', 'express-specialist', 'mongodb-specialist'],
+      categories: ['generic', 'backend', 'database']
     },
     python: {
-      agents: ['fastapi-builder', 'senior-software-engineer'],
-      categories: ['backend', 'generic']
+      agents: ['agent-selector', 'fastapi-builder', 'senior-software-engineer'],
+      categories: ['generic', 'backend']
     },
     general: {
-      agents: ['senior-software-engineer'],
+      agents: ['agent-selector', 'senior-software-engineer'],
       categories: ['generic']
     }
   };
@@ -376,4 +381,154 @@ async function getAgentChoices(categories: string[]): Promise<any[]> {
   }
   
   return choices;
+}
+
+async function createClaudeMdFile(projectPath: string, selectedAgents: string[], hasAgentSelector: boolean): Promise<void> {
+  const claudeMdPath = path.join(projectPath, 'CLAUDE.md');
+  const templatePath = path.join(__dirname, '..', 'templates', 'CLAUDE.md.template');
+  
+  // Check if CLAUDE.md already exists
+  if (await fs.pathExists(claudeMdPath)) {
+    console.log(chalk.yellow('\n⚠️  CLAUDE.md already exists in your project.'));
+    
+    const { action } = await inquirer.prompt([{
+      type: 'list',
+      name: 'action',
+      message: 'What would you like to do?',
+      choices: [
+        { name: 'Keep existing CLAUDE.md', value: 'keep' },
+        { name: 'Backup and create new', value: 'backup' },
+        { name: 'Overwrite existing', value: 'overwrite' }
+      ]
+    }]);
+    
+    if (action === 'keep') {
+      console.log(chalk.gray('Keeping existing CLAUDE.md file.'));
+      return;
+    } else if (action === 'backup') {
+      const backupPath = `${claudeMdPath}.backup.${Date.now()}`;
+      await fs.copy(claudeMdPath, backupPath);
+      console.log(chalk.gray(`Backed up existing file to: ${path.basename(backupPath)}`));
+    }
+  }
+  
+  // Load template
+  const template = await fs.readFile(templatePath, 'utf-8');
+  
+  // Get agent details
+  const agentDetails = [];
+  const sourcePath = path.join(__dirname, '..', '..', 'agents');
+  
+  for (const agentName of selectedAgents) {
+    for (const category of await fs.readdir(sourcePath)) {
+      const agentPath = path.join(sourcePath, category, `${agentName}.md`);
+      if (await fs.pathExists(agentPath)) {
+        const content = await fs.readFile(agentPath, 'utf-8');
+        const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+        if (frontmatterMatch) {
+          const lines = frontmatterMatch[1].split('\n');
+          const metadata: Record<string, string> = {};
+          for (const line of lines) {
+            const [key, ...valueParts] = line.split(':');
+            if (key && valueParts.length) {
+              metadata[key.trim()] = valueParts.join(':').trim();
+            }
+          }
+          agentDetails.push({
+            name: agentName,
+            category: category,
+            description: metadata.description || 'No description available'
+          });
+        }
+        break;
+      }
+    }
+  }
+  
+  // Get project structure
+  let projectStructure = '';
+  try {
+    const { stdout } = await execAsync('find . -type f -name "*.json" -o -name "*.js" -o -name "*.ts" -o -name "*.py" | grep -v node_modules | grep -v .git | head -20');
+    projectStructure = stdout.trim();
+  } catch {
+    projectStructure = 'Unable to determine project structure';
+  }
+  
+  // Get package.json scripts if available
+  const commands = [];
+  const packageJsonPath = path.join(projectPath, 'package.json');
+  if (await fs.pathExists(packageJsonPath)) {
+    const packageJson = await fs.readJson(packageJsonPath);
+    if (packageJson.scripts) {
+      const items = Object.entries(packageJson.scripts).map(([name, script]) => ({
+        command: `npm run ${name}`,
+        description: typeof script === 'string' ? script.substring(0, 50) : ''
+      }));
+      commands.push({ category: 'NPM Scripts', items });
+    }
+  }
+  
+  // Prepare template data
+  const templateData = {
+    projectName: path.basename(projectPath),
+    createdDate: new Date().toLocaleDateString(),
+    subAgentsVersion: '1.0.0', // You might want to read this from package.json
+    hasAgentSelector,
+    agents: agentDetails,
+    projectStructure: projectStructure || '.',
+    commands,
+    guidelines: [
+      'Follow the coding style and conventions used in this project',
+      'Write clear, maintainable code with appropriate comments',
+      'Test your changes thoroughly before committing',
+      'Use the installed agents for their specialized domains'
+    ]
+  };
+  
+  // Simple template replacement
+  let content = template;
+  
+  // Handle conditional sections
+  if (hasAgentSelector) {
+    content = content.replace(/{{#hasAgentSelector}}([\s\S]*?){{\/hasAgentSelector}}/g, '$1');
+  } else {
+    content = content.replace(/{{#hasAgentSelector}}[\s\S]*?{{\/hasAgentSelector}}/g, '');
+  }
+  
+  // Replace simple variables
+  content = content.replace(/{{projectName}}/g, templateData.projectName);
+  content = content.replace(/{{createdDate}}/g, templateData.createdDate);
+  content = content.replace(/{{subAgentsVersion}}/g, templateData.subAgentsVersion);
+  content = content.replace(/{{projectStructure}}/g, templateData.projectStructure);
+  
+  // Handle agents list
+  const agentsSection = templateData.agents
+    .map(agent => `- **${agent.name}** (${agent.category}): ${agent.description}`)
+    .join('\n');
+  content = content.replace(/{{#agents}}[\s\S]*?{{\/agents}}/g, agentsSection);
+  
+  // Handle commands
+  let commandsSection = '';
+  for (const cmdGroup of templateData.commands) {
+    commandsSection += `### ${cmdGroup.category}\n\`\`\`bash\n`;
+    for (const item of cmdGroup.items) {
+      commandsSection += `${item.command}`;
+      if (item.description) {
+        commandsSection += ` # ${item.description}`;
+      }
+      commandsSection += '\n';
+    }
+    commandsSection += '```\n\n';
+  }
+  content = content.replace(/{{#commands}}[\s\S]*?{{\/commands}}/g, commandsSection);
+  
+  // Handle guidelines
+  const guidelinesSection = templateData.guidelines
+    .map(guideline => `- ${guideline}`)
+    .join('\n');
+  content = content.replace(/{{#guidelines}}[\s\S]*?{{\/guidelines}}/g, guidelinesSection);
+  
+  // Write the file
+  await fs.writeFile(claudeMdPath, content);
+  console.log(chalk.green('✅ Created CLAUDE.md file with project configuration'));
 }

@@ -1,0 +1,56 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Information
+- **Project**: {{projectName}}
+- **Created**: {{createdDate}}
+- **Sub-agents Version**: {{subAgentsVersion}}
+
+## Agent Selection
+{{#hasAgentSelector}}
+This project has automatic agent selection enabled. When you don't specify an agent,
+the agent-selector will analyze your request and delegate to the appropriate specialist.
+
+### How to use specific agents
+If you want to use a specific agent, mention it in your request:
+- "Using the react-component-builder agent, create a new component..."
+- "As the postgres-dba agent, optimize this query..."
+
+### Automatic selection
+When you don't specify an agent, the agent-selector will:
+1. Analyze your request
+2. Identify the most suitable agent(s)
+3. Delegate the task appropriately
+{{/hasAgentSelector}}
+
+## Installed Agents
+{{#agents}}
+- **{{name}}** ({{category}}): {{description}}
+{{/agents}}
+
+## Project Structure
+```
+{{projectStructure}}
+```
+
+## Available Commands
+{{#commands}}
+### {{category}}
+```bash
+{{#items}}
+{{command}}{{#description}} # {{.}}{{/description}}
+{{/items}}
+```
+{{/commands}}
+
+## Development Guidelines
+{{#guidelines}}
+- {{.}}
+{{/guidelines}}
+
+## Notes
+- Agents are located in `.claude/agents/`
+- Custom agents can be added to `.claude/agents/custom/`
+- Run `npx sub-agents list` to see all available agents
+- Run `npx sub-agents install --interactive` to add more agents

@@ -2,6 +2,7 @@
 .claude-cache/
 .claude
 .clauderc
+.serena/
 
 # Publishing
 PUBLISHING.md
